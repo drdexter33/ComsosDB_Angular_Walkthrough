@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Hero } from './hero';
+import { HeroService } from './hero.service';
 
 @Component({
   selector: 'app-heroes',
@@ -32,8 +34,33 @@ export class HeroesComponent {
 
   getHeroes(){
     return this.heroService.getHeroes.subscribe(heroes => {
-
+      this.heroes = heroes
     });
 
   };
+
+  enableAddMode(){
+    this.addingHero - true;
+    this.selectedHero = new Hero();
+  }
+
+  onSelect(hero: Hero){
+    this.addingHero = false;
+    this.selectedHero = hero;
+  }
+  save() {
+    if (this.addingHero) {
+      this.heroService.addHero(this.selectedHero).subscribe(hero => {
+        this.addingHero = false;
+        this.selectedHero = null;
+        this.heroes.push(hero);
+      });
+    } else {
+      this.heroService.updateHero(this.selectedHero).subscribe(hero => {
+        this.addingHero = false;
+        this.selectedHero = null;
+      });
+    }
+  }
+
 }
